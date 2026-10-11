@@ -171,7 +171,8 @@ fun GameScreen(vm: GameViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                // Tabu (-1)
+                // Tabu Button with dynamic penalty points
+                val tabooButtonText = if (vm.tabooPenalty > 0) "Tabu (-${vm.tabooPenalty})" else "Tabu (0)"
                 Button(
                     onClick = { vm.onTaboo() },
                     modifier = Modifier
@@ -184,7 +185,7 @@ fun GameScreen(vm: GameViewModel) {
                     )
                 ) {
                     Text(
-                        text = "Tabu (-1)",
+                        text = tabooButtonText,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )

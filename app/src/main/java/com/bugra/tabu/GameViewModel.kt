@@ -2,8 +2,6 @@ package com.bugra.tabu
 
 import android.app.Application
 import android.content.Context
-import android.media.AudioManager
-import android.media.ToneGenerator
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,9 +26,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var passLimit by mutableStateOf(prefs.getInt("pass_limit", 3))     // -1 = limitsiz
         private set
-    var selectedCategory by mutableStateOf(prefs.getString("selected_category", "Tümü") ?: "Tümü")
+    var tabooPenalty by mutableStateOf(prefs.getInt("taboo_penalty", 1)) // 0, 1, 2, 3
         private set
-    var soundEnabled by mutableStateOf(prefs.getBoolean("sound_enabled", false))
+    var selectedCategory by mutableStateOf(prefs.getString("selected_category", "Tümü") ?: "Tümü")
         private set
 
     // Teams
@@ -57,12 +55,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     // Actions in current round
     val roundActions = mutableStateListOf<WordAction>()
 
-    // Calculated round score
+    // Calculated round score using configurable tabooPenalty
     val roundScore: Int
         get() = roundActions.fold(0) { acc, action ->
             acc + when (action.actionType) {
                 ActionType.CORRECT -> 1
-                ActionType.TABOO -> -1
+                ActionType.TABOO -> -tabooPenalty
                 ActionType.PASS -> 0
             }
         }
@@ -80,27 +78,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     private var timerJob: Job? = null
-    private var toneGen: ToneGenerator? = null
 
     init {
         loadTeams()
-        initToneGenerator()
-    }
-
-    private fun initToneGenerator() {
-        try {
-            toneGen = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 15)
-        } catch (_: Exception) {
-            toneGen = null
-        }
-    }
-
-    private fun playTone(toneType: Int) {
-        if (!soundEnabled) return
-        try {
-            toneGen?.startTone(toneType, 70)
-        } catch (_: Exception) {
-        }
     }
 
     private fun loadTeams() {
@@ -143,14 +123,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         prefs.edit().putInt("pass_limit", limit).apply()
     }
 
+    fun setPenalty(penalty: Int) {
+        tabooPenalty = penalty
+        prefs.edit().putInt("taboo_penalty", penalty).apply()
+    }
+
     fun setCategory(category: String) {
         selectedCategory = category
         prefs.edit().putString("selected_category", category).apply()
-    }
-
-    fun toggleSound(enabled: Boolean) {
-        soundEnabled = enabled
-        prefs.edit().putBoolean("sound_enabled", enabled).apply()
     }
 
     // Team management
@@ -236,7 +216,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 if (!isPaused) {
                     remainingSeconds--
                     if (remainingSeconds == 0) {
-                        playTone(ToneGenerator.TONE_PROP_BEEP2)
                         endTurn()
                     }
                 }
@@ -251,14 +230,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     // In-game actions
     fun onCorrect() {
         val card = currentCard ?: return
-        playTone(ToneGenerator.TONE_PROP_BEEP)
         roundActions.add(WordAction(card, ActionType.CORRECT))
         currentCard = drawNextCard()
     }
 
     fun onTaboo() {
         val card = currentCard ?: return
-        playTone(ToneGenerator.TONE_PROP_NACK)
         roundActions.add(WordAction(card, ActionType.TABOO))
         currentCard = drawNextCard()
     }
@@ -269,7 +246,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         if (passLimit != -1) {
             remainingPasses--
         }
-        playTone(ToneGenerator.TONE_PROP_ACK)
         roundActions.add(WordAction(card, ActionType.PASS))
         currentCard = drawNextCard()
     }
@@ -329,6 +305,5 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     override fun onCleared() {
         super.onCleared()
         timerJob?.cancel()
-        toneGen?.release()
     }
 }

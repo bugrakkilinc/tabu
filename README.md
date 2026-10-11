@@ -12,8 +12,7 @@ Modern, minimalist, çevrimdışı (offline) ve tamamen reklamsız Android Tabu 
   - Metinler: Açık gri `#E4E6EC` ve sakin `#9399A8`
   - Vurgular & Butonlar: Yumuşak köşeli, mat renkler (Doğru `#7DB596`, Pas `#D1A86B`, Tabu `#C9757C`)
 - **Sade Menü & Düzen**: Ana ekranda kalabalık listeler yerine özet satırları (`MenuRow`) yer alır. Düzenlemeler sade açılır pencereler (Dialog) üzerinden yapılır.
-- **Sıfır Titreşim & Sıfır İzin**: Titreşim izni ve donanımı kullanılmaz. Sıfır internet izni ile %100 gizlilik ve çevrimdışı çalışma garantisi.
-- **Minimal Ses**: İsteğe bağlı, hafif sistem bildirim tonları.
+- **Sıfır Titreşim, Sıfır Ses & Sıfır İzin**: Titreşim ve ses donanımları kesinlikle kullanılmaz, izin istemez. Sıfır internet izni ile %100 gizlilik ve çevrimdışı çalışma garantisi.
 
 ---
 
@@ -24,6 +23,7 @@ Modern, minimalist, çevrimdışı (offline) ve tamamen reklamsız Android Tabu 
    - **Tur Süresi**: 45, 60, 90 veya 120 saniye seçenekleri.
    - **Hedef Puan**: 25, 50, 75, 100 puan veya limitsiz serbest oyun.
    - **Pas Hakkı**: 1, 2, 3, 5 pas veya limitsiz pas hakkı.
+   - **Tabu Cezası Seçimi**: Ceza Yok (0 Puan), -1 Puan (Klasik), -2 Puan (Zor), -3 Puan (Ağır Ceza).
    - **Kategori Seçimi**: Tümü, Genel, Yiyecek & İçecek, Eşya & Teknoloji, Popüler Kültür & Dizi, Doğa & Mekan, Meslek & Kavram, Spor & Hobi.
 
 2. **Tur Hazırlık Ekranı**:
@@ -36,7 +36,7 @@ Modern, minimalist, çevrimdışı (offline) ve tamamen reklamsız Android Tabu 
    - 3 Net Aksiyon Butonu:
      - 🟢 **Doğru (+1)**
      - 🟡 **Pas** (Hakkı bitince yumuşak şekilde pasifleşir)
-     - 🔴 **Tabu (-1)**
+     - 🔴 **Tabu** (Seçilen ceza puanına göre örn. `Tabu (-1)` veya `Tabu (0)`)
    - Duraklatma (Pause) ve devam etme desteği.
 
 4. **Tur Sonu & Skor Ekranı**:

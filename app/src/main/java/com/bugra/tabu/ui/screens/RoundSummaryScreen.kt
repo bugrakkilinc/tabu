@@ -130,7 +130,7 @@ fun RoundSummaryScreen(vm: GameViewModel) {
                                 ActionType.TABOO -> {
                                     badgeColor = ActionRed.copy(alpha = 0.2f)
                                     badgeTextColor = ActionRed
-                                    badgeText = "✕ Tabu (-1)"
+                                    badgeText = if (vm.tabooPenalty > 0) "✕ Tabu (-${vm.tabooPenalty})" else "✕ Tabu (0)"
                                 }
                                 ActionType.PASS -> {
                                     badgeColor = DarkSurface2

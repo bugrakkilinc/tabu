@@ -2,7 +2,6 @@ package com.bugra.tabu.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +26,7 @@ fun LobbyScreen(vm: GameViewModel) {
     var showDurationDialog by remember { mutableStateOf(false) }
     var showTargetDialog by remember { mutableStateOf(false) }
     var showPassDialog by remember { mutableStateOf(false) }
+    var showTabooPenaltyDialog by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -104,41 +104,21 @@ fun LobbyScreen(vm: GameViewModel) {
                 showPassDialog = true
             }
 
+            // Summary row: Tabu Cezası (Kullanıcı tercihi)
+            val tabooPenaltyLabel = if (vm.tabooPenalty == 0) "Ceza Yok (0 Puan)" else "-${vm.tabooPenalty} Puan"
+            MenuRow(
+                label = "⚠️ Tabu Cezası",
+                value = tabooPenaltyLabel
+            ) {
+                showTabooPenaltyDialog = true
+            }
+
             // Summary row: Kategori
             MenuRow(
                 label = "🗂️ Kategori",
                 value = vm.selectedCategory
             ) {
                 showCategoryDialog = true
-            }
-
-            // Sound Toggle row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(DarkSurface1)
-                    .clickable { vm.toggleSound(!vm.soundEnabled) }
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "🔊 Ses Efektleri",
-                    fontSize = 15.sp,
-                    color = TextMain,
-                    modifier = Modifier.weight(1f)
-                )
-                Switch(
-                    checked = vm.soundEnabled,
-                    onCheckedChange = { vm.toggleSound(it) },
-                    colors = SwitchDefaults.colors(
-                        checkedTrackColor = Accent,
-                        checkedThumbColor = OnAccent,
-                        uncheckedTrackColor = DarkSurface2,
-                        uncheckedThumbColor = TextSub,
-                        uncheckedBorderColor = DarkSurface2
-                    )
-                )
             }
         }
 
@@ -208,6 +188,21 @@ fun LobbyScreen(vm: GameViewModel) {
             selectedValue = vm.passLimit,
             onSelect = { vm.setPass(it) },
             onDismiss = { showPassDialog = false }
+        )
+    }
+
+    if (showTabooPenaltyDialog) {
+        SingleChoiceDialog(
+            title = "Tabu Cezası Seçimi",
+            options = listOf(
+                "Ceza Yok (0 Puan)" to 0,
+                "-1 Puan (Klasik)" to 1,
+                "-2 Puan (Zor Mod)" to 2,
+                "-3 Puan (Ağır Ceza)" to 3
+            ),
+            selectedValue = vm.tabooPenalty,
+            onSelect = { vm.setPenalty(it) },
+            onDismiss = { showTabooPenaltyDialog = false }
         )
     }
 
