@@ -1,11 +1,26 @@
+# Gradle files
+.gradle/
+build/
+*/build/
+
+# Local configuration
+local.properties
+
+# Android Studio / IntelliJ IDEA
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea
+*.ipr
+*.iws
+
+# OS specific files
 .DS_Store
-/build
-*/build
-.cxx
+Thumbs.db
+
+# Output APKs in root (keep git repo clean; APKs are distributed via Releases)
+/*.apk
+
+# Profiler & logs
 *.hprof
 captures/
 .externalNativeBuild
+.cxx/

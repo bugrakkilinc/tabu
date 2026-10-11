@@ -19,9 +19,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("release.keystore")
-            storePassword = "imposter123"
-            keyAlias = "imposter"
-            keyPassword = "imposter123"
+            storePassword = "tabu123"
+            keyAlias = "tabu"
+            keyPassword = "tabu123"
             enableV1Signing = true
             enableV2Signing = true
             enableV3Signing = true

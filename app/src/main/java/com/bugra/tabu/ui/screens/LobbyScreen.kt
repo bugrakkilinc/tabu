@@ -148,8 +148,11 @@ fun LobbyScreen(vm: GameViewModel) {
         SingleChoiceDialog(
             title = "Tur Süresi Seçimi",
             options = listOf(
+                "15 saniye (Yıldırım)" to 15,
+                "20 saniye" to 20,
+                "30 saniye (Hızlı)" to 30,
                 "45 saniye" to 45,
-                "60 saniye" to 60,
+                "60 saniye (Standart)" to 60,
                 "90 saniye" to 90,
                 "120 saniye" to 120
             ),
