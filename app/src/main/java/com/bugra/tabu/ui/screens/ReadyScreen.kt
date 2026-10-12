@@ -36,8 +36,9 @@ fun ReadyScreen(vm: GameViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(top = 20.dp)
         ) {
+            val roundText = if (vm.totalRounds > 0) "${vm.currentRound} / ${vm.totalRounds}. Tur" else "${vm.currentRound}. Tur"
             Text(
-                text = "${vm.currentRound}. Tur",
+                text = roundText,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
                 color = TextSub

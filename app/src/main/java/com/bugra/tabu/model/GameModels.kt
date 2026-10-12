@@ -36,5 +36,6 @@ data class GameSettings(
     val roundDurationSeconds: Int = 60,
     val targetScore: Int = 50, // 0 means unlimited
     val passLimit: Int = 3,    // -1 means unlimited
-    val tabooPenalty: Int = 1  // 0, 1, 2, 3
+    val tabooPenalty: Int = 1, // 0, 1, 2, 3
+    val totalRounds: Int = 3   // 0 means unlimited
 )

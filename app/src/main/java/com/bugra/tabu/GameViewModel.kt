@@ -28,6 +28,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var tabooPenalty by mutableStateOf(prefs.getInt("taboo_penalty", 1)) // 0, 1, 2, 3
         private set
+    var totalRounds by mutableStateOf(prefs.getInt("total_rounds", 3)) // 0 = limitsiz
+        private set
     var selectedCategory by mutableStateOf(prefs.getString("selected_category", "Tümü") ?: "Tümü")
         private set
 
@@ -70,11 +72,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     val winnerTeam: Team?
         get() {
-            if (targetScore <= 0 || teams.isEmpty()) return null
-            val leaders = teams.filter { it.score >= targetScore }
-            return if (leaders.isNotEmpty()) {
-                leaders.maxByOrNull { it.score }
-            } else null
+            if (teams.isEmpty()) return null
+            return teams.maxByOrNull { it.score }
         }
 
     private var timerJob: Job? = null
@@ -126,6 +125,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun setPenalty(penalty: Int) {
         tabooPenalty = penalty
         prefs.edit().putInt("taboo_penalty", penalty).apply()
+    }
+
+    fun setRounds(rounds: Int) {
+        totalRounds = rounds
+        prefs.edit().putInt("total_rounds", rounds).apply()
     }
 
     fun setCategory(category: String) {
@@ -271,20 +275,21 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     // Finish summary and proceed
     fun nextRound() {
-        // Commit score to current team
+        // Commit score to current team (negative scores allowed)
         val earnedScore = roundScore
         val oldTeam = teams[currentTeamIndex]
-        val newScore = maxOf(0, oldTeam.score + earnedScore)
+        val newScore = oldTeam.score + earnedScore
         teams[currentTeamIndex] = oldTeam.copy(score = newScore)
 
-        // Check if any team won
-        if (targetScore > 0) {
-            val isEndOfRoundCycle = (currentTeamIndex == teams.size - 1)
-            val anyReachedTarget = teams.any { it.score >= targetScore }
-            if (isEndOfRoundCycle && anyReachedTarget) {
-                screen = GameScreen.GAME_OVER
-                return
-            }
+        val isEndOfRoundCycle = (currentTeamIndex == teams.size - 1)
+
+        // Check if game is over: target score reached or max rounds completed
+        val targetReached = (targetScore > 0 && teams.any { it.score >= targetScore })
+        val roundsFinished = (totalRounds > 0 && currentRound >= totalRounds)
+
+        if (isEndOfRoundCycle && (targetReached || roundsFinished)) {
+            screen = GameScreen.GAME_OVER
+            return
         }
 
         // Advance to next team

@@ -27,6 +27,7 @@ fun LobbyScreen(vm: GameViewModel) {
     var showTargetDialog by remember { mutableStateOf(false) }
     var showPassDialog by remember { mutableStateOf(false) }
     var showTabooPenaltyDialog by remember { mutableStateOf(false) }
+    var showTotalRoundsDialog by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -84,6 +85,15 @@ fun LobbyScreen(vm: GameViewModel) {
                 value = "${vm.roundDuration} sn"
             ) {
                 showDurationDialog = true
+            }
+
+            // Summary row: Toplam Tur
+            val roundsLabel = if (vm.totalRounds == 0) "Limitsiz" else "${vm.totalRounds} Tur"
+            MenuRow(
+                label = "🔄 Toplam Tur",
+                value = roundsLabel
+            ) {
+                showTotalRoundsDialog = true
             }
 
             // Summary row: Hedef Puan
@@ -206,6 +216,24 @@ fun LobbyScreen(vm: GameViewModel) {
             selectedValue = vm.tabooPenalty,
             onSelect = { vm.setPenalty(it) },
             onDismiss = { showTabooPenaltyDialog = false }
+        )
+    }
+
+    if (showTotalRoundsDialog) {
+        SingleChoiceDialog(
+            title = "Toplam Tur Sayısı",
+            options = listOf(
+                "1 Tur (Hızlı Oyun)" to 1,
+                "2 Tur" to 2,
+                "3 Tur (Önerilen)" to 3,
+                "5 Tur" to 5,
+                "7 Tur" to 7,
+                "10 Tur (Uzun Oyun)" to 10,
+                "Limitsiz (Serbest / Puan Odaklı)" to 0
+            ),
+            selectedValue = vm.totalRounds,
+            onSelect = { vm.setRounds(it) },
+            onDismiss = { showTotalRoundsDialog = false }
         )
     }
 

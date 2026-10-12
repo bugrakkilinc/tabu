@@ -54,17 +54,18 @@ fun GameScreen(vm: GameViewModel) {
             ) {
                 // Team & Score
                 Column {
+                    val roundPrefix = if (vm.totalRounds > 0) "${vm.currentRound}/${vm.totalRounds}. Tur • " else "${vm.currentRound}. Tur • "
                     Text(
-                        text = team.name,
-                        fontSize = 17.sp,
+                        text = "$roundPrefix${team.name}",
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = TextMain
                     )
                     val sign = if (vm.roundScore > 0) "+" else ""
                     Text(
-                        text = "Tur: $sign${vm.roundScore} Puan",
+                        text = "Tur Skoru: $sign${vm.roundScore} Puan",
                         fontSize = 13.sp,
-                        color = if (vm.roundScore >= 0) ActionGreen else ActionRed,
+                        color = if (vm.roundScore > 0) ActionGreen else if (vm.roundScore < 0) ActionRed else TextSub,
                         fontWeight = FontWeight.Medium
                     )
                 }
